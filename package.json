@@ -2,7 +2,7 @@
   "name": "@chaos-labs/uniswap-v3-oracle-hardhat-plugin",
   "version": "1.0.0",
   "description": "",
-  "repository": "github:ChaosLabsInc/chainlink-hardhat-plugin",
+  "repository": "github:ChaosLabsInc/uniswap-v3-oracle-hardhat-plugin",
   "author": "Chaos Labs Inc.",
   "license": "MIT",
   "main": "dist/index.js",
