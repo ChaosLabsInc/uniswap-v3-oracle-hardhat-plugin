@@ -1,11 +1,13 @@
 ![Chaos Labs - Uniswap Collaboration](https://github.com/ChaosLabsInc/uniswap-v3-oracle-cli/blob/main/img/ChaosLabsUniswap.jpg)
 
-This repository hosts an hardhat plugin for configuring Uniswap V3 Oracle prices in a local hardhat mainnet fork testing environment.
+This repository hosts a hardhat plugin for configuring Uniswap V3 Oracle prices in a local hardhat mainnet fork testing environment.
 
 For a full deep dive to the project architecture please review the following posts:
 
 - [Uniswap v3 TWAP Deep Dive Pt. 2](https://chaoslabs.xyz/posts/chaos-labs-uniswap-v3-twap-deep-dive-pt-2)
 - [Uniswap v3 TWAP Deep Dive Pt. 1](https://chaoslabs.xyz/posts/chaos-labs-uniswap-v3-twap-deep-dive-pt-1)
+
+This project was proudly developed with grants from the [Uniswap Grants Program (UGP)](https://unigrants.org).
 
 ## Why is Mocking Oracle values useful in testing?
 
