@@ -1,8 +1,11 @@
 ![Chaos Labs - Uniswap Collaboration](https://github.com/ChaosLabsInc/uniswap-v3-oracle-cli/blob/main/img/ChaosLabsUniswap.jpg)
 
-This repository hosts an hardhat plugin for configuring Uniswap V3 Oracle prices in a local hardhat mainnet fork testing environment. 
+This repository hosts an hardhat plugin for configuring Uniswap V3 Oracle prices in a local hardhat mainnet fork testing environment.
 
-For a full deep dive to the project architecture please visit the [Chaos Labs blog](https://chaoslabs.xyz/blog).
+For a full deep dive to the project architecture please review the following posts:
+
+- [Uniswap v3 TWAP Deep Dive Pt. 2](https://chaoslabs.xyz/posts/chaos-labs-uniswap-v3-twap-deep-dive-pt-2)
+- [Uniswap v3 TWAP Deep Dive Pt. 1](https://chaoslabs.xyz/posts/chaos-labs-uniswap-v3-twap-deep-dive-pt-1)
 
 ## Why is Mocking Oracle values useful in testing?
 
@@ -32,9 +35,9 @@ With the ability to manipulate Uniswap V3 Oracle return values, simulating such 
 
 ## Prerequisites
 
-* In order to use the plugin correctly we'll want to run a mainnet fork. We need the fork so we can have a snapshot of all deployed Uniswap Pools and access to their Oracle interfaces. Uniswap v3 Oracles interface can be challenging to fork at first. That's why recommend reading the offical docs as well as checking out the [Chaos Labs blog](https://chaoslabs.xyz/blog).
-`Hardhat` has an Alchemy integration. In order to fork mainnet you need an API key, so navigate to the alchemy site and sign up for one. Alchemy API key for mainnet fork access: [Get one here](https://www.alchemy.com/).
-* We assume you have npm installed, if not go to https://nodejs.org/en/download/ and follow the instructions.
+- In order to use the plugin correctly we'll want to run a mainnet fork. We need the fork so we can have a snapshot of all deployed Uniswap Pools and access to their Oracle interfaces. Uniswap v3 Oracles interface can be challenging to fork at first. That's why recommend reading the offical docs as well as checking out the [Chaos Labs blog](https://chaoslabs.xyz/blog).
+  `Hardhat` has an Alchemy integration. In order to fork mainnet you need an API key, so navigate to the alchemy site and sign up for one. Alchemy API key for mainnet fork access: [Get one here](https://www.alchemy.com/).
+- We assume you have npm installed, if not go to https://nodejs.org/en/download/ and follow the instructions.
 
 ## Installation
 
@@ -61,34 +64,39 @@ import "@chaos-labs/uniswap-v3-oracle-hardhat-plugin";
 ## Interfaces
 
 this plugin extend the [HardhatRuntimeEnvironment](https://hardhat.org/advanced/hardhat-runtime-environment.html) by adding `UniswapV3OracleConfig` object to the runtime envionment.
- `UniswapV3OracleConfig` expose the following methods:
+`UniswapV3OracleConfig` expose the following methods:
 
- **CreatePool(token0Adress: string, token1Adress: string): Promise\<string\>:**
+**CreatePool(token0Adress: string, token1Adress: string): Promise\<string\>:**
 CreatePool receives two ERC-20 token's addresses and return the address of the newly deployed pool.
 In the following cases the method will throw `HardhatPluginError` exception:
-* token0Adress === token1Adress
-* At least one of the tokens addresses is invalid
-* Pool with the same pair already exist.
 
- **OverrideCurrentObservationTimestamp(poolAddress: string, timestamp: number): Promise\<void\>:**
- OverrideCurrentObservationTimestamp receives a pool address and a timestamp, and override the current observation (the observation with index eqaul to slot0.observationIndex) blockTimestamp property.
- Please note that we need to invoke this method on pools we deployed with the `CreatePool` method prior to the invokation of `ShowPrices` and `MockPoolPrice` methods with TWAP interval larger then 0.
- In the following case the method will throw `HardhatPluginError` exception:
-* poolAddress is an invalid address.
+- token0Adress === token1Adress
+- At least one of the tokens addresses is invalid
+- Pool with the same pair already exist.
 
- **MockPoolPrice(poolAddress: string, twapInterval: number, price: number): Promise\<void\>:**
-MockPoolPrice receives a pool address, twap interval and the mocked price of the oracle. the method mock the return value of the oracle for the given interval.
- In the following case the method will throw `HardhatPluginError` exception:
-* poolAddress is an invalid address.
-
- **ShowPrices(poolAddress: string, twapInterval: number): Promise\<number[]\>:**
- ShowPrices receives a pool address and the twap interval, and return the pool's pair prices as calculated with the given interval.
+  **OverrideCurrentObservationTimestamp(poolAddress: string, timestamp: number): Promise\<void\>:**
+  OverrideCurrentObservationTimestamp receives a pool address and a timestamp, and override the current observation (the observation with index eqaul to slot0.observationIndex) blockTimestamp property.
+  Please note that we need to invoke this method on pools we deployed with the `CreatePool` method prior to the invokation of `ShowPrices` and `MockPoolPrice` methods with TWAP interval larger then 0.
   In the following case the method will throw `HardhatPluginError` exception:
-* poolAddress is an invalid address.
+
+- poolAddress is an invalid address.
+
+  **MockPoolPrice(poolAddress: string, twapInterval: number, price: number): Promise\<void\>:**
+  MockPoolPrice receives a pool address, twap interval and the mocked price of the oracle. the method mock the return value of the oracle for the given interval.
+  In the following case the method will throw `HardhatPluginError` exception:
+
+- poolAddress is an invalid address.
+
+  **ShowPrices(poolAddress: string, twapInterval: number): Promise\<number[]\>:**
+  ShowPrices receives a pool address and the twap interval, and return the pool's pair prices as calculated with the given interval.
+  In the following case the method will throw `HardhatPluginError` exception:
+
+- poolAddress is an invalid address.
 
 ## Usage
 
 at hardhat.config.js:
+
 ```js
 const { task } = require("hardhat/config");
 
@@ -98,8 +106,7 @@ task("demo1", async () => {
   // Create new pool USDT\LUNA
   const usdtTokenAddress = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
   const lunaTokenAddress = "0xd2877702675e6cEb975b4A1dFf9fb7BAF4C91ea9";
-  const newPoolAdress =
-    await uniswapV3OracleConfig.CreatePool(usdtTokenAddress, lunaTokenAddress);
+  const newPoolAdress = await uniswapV3OracleConfig.CreatePool(usdtTokenAddress, lunaTokenAddress);
 
   const currentObservationTimestamp = 100;
   await uniswapV3OracleConfig.OverrideCurrentObservationTimestamp(newPoolAdress, currentObservationTimestamp);
@@ -135,6 +142,7 @@ task("demo2", async () => {
   console.log("updated prices - " + updatedPrices);
 });
 ```
+
 ## Run Tests
 
 1. Restart the mainnet fork for a fresh state.
